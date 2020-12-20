@@ -15,13 +15,13 @@ exports.categoryById = (req,res,next,id)=>{
 
 exports.create = (req, res) => {
     const category = new Category(req.body);
-    category.save((err, data) => {
+    category.save((err, category) => {
         if (err) {
             return res.status(400).json({
                 error: errorHandler(err)
             });
         }
-        res.json({ data });
+        res.json( category );
     });
 };
 
