@@ -113,6 +113,10 @@ const RecipeSchema = new mongoose.Schema(
             data: Buffer,
             contentType: String
         },
+        photo1: {
+            data: Buffer,
+            contentType: String
+        },
     },
     { timestamps: true }
 );

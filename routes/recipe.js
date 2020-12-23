@@ -10,6 +10,7 @@ const {create,
         listCategories,
         listBySearch,
         photo,
+        photo1,
         listSearch
       } = require('../controllers/recipe');
 const { requireSignin, isAuth, isAdmin } = require('../requirements/requirements');
@@ -41,6 +42,7 @@ router.get('/related/:recipeId',listRelated)
 router.get('/categories',listCategories)
 router.post("/by/search", listBySearch);
 router.get("/photo/:recipeId", photo);
+router.get("/photo1/:recipeId", photo1);
 
 router.param('userId', userById);
 router.param('recipeId', recipeById);
