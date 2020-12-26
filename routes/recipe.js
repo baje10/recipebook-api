@@ -1,4 +1,5 @@
 const express = require('express');
+const Recipe = require('../models/Recipe');
 const router = express.Router();
 
 const {create,
@@ -11,6 +12,7 @@ const {create,
         listBySearch,
         photo,
         photo1,
+        reviews,
         listSearch
       } = require('../controllers/recipe');
 const { requireSignin, isAuth, isAdmin } = require('../requirements/requirements');
@@ -35,6 +37,8 @@ router.put(
     isAdmin,
     update
 );
+
+router.post('/reviews/:id', reviews, requireSignin)
 
 router.get('/', list)
 router.get("/search", listSearch);

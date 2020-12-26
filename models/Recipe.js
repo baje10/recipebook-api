@@ -1,6 +1,16 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
+const CommentSchema = new mongoose.Schema (
+  {
+    name: { type: String, required: true },
+    comment: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 const RecipeSchema = new mongoose.Schema(
     {
         name: {
@@ -109,6 +119,7 @@ const RecipeSchema = new mongoose.Schema(
             ref: "Category",
             required: true
         },
+        reviews: [ CommentSchema ],
         photo: {
             data: Buffer,
             contentType: String

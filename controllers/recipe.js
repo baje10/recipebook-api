@@ -21,6 +21,25 @@ exports.read = (req, res) =>{
   return res.json(req.recipe);
 };
 
+exports.reviews = async (req, res, id) => {
+  const recipe = await  Recipe.findById(req.params.id);
+  if (recipe) {
+    const review = {
+      name: req.body.name,
+      comment: req.body.comment
+    };
+    recipe.reviews.push(review);
+    recipe.numReviews = recipe.reviews.length;
+    const updatedRecipe = await recipe.save();
+    res.status(200).send({
+      data: updatedRecipe.reviews[updatedRecipe.reviews.length - 1],
+      message: 'Review saved successfully.',
+    });
+  } else {
+    res.status(404).send({ message: 'Recipe Not Found' });
+  }
+}
+
 exports.create = (req, res) => {
    let form = new formidable.IncomingForm()
    form.keepExtensions = true
