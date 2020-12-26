@@ -26,7 +26,8 @@ exports.reviews = async (req, res, id) => {
   if (recipe) {
     const review = {
       name: req.body.name,
-      comment: req.body.comment
+      comment: req.body.comment,
+      userRole: req.body.userRole
     };
     recipe.reviews.push(review);
     recipe.numReviews = recipe.reviews.length;
