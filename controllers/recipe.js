@@ -26,11 +26,14 @@ exports.reviews = async (req, res, id) => {
   if (recipe) {
     const review = {
       name: req.body.name,
+      rating: Number(req.body.rating),
       comment: req.body.comment,
       userRole: req.body.userRole
     };
     recipe.reviews.push(review);
     recipe.numReviews = recipe.reviews.length;
+    recipe.rating = recipe.reviews.reduce((a, c) => c.rating + a, 0) /
+    recipe.reviews.length;
     const updatedRecipe = await recipe.save();
     res.status(200).send({
       data: updatedRecipe.reviews[updatedRecipe.reviews.length - 1],

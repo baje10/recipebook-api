@@ -40,10 +40,22 @@ router.put(
 
 router.post('/reviews/:id', reviews, requireSignin)
 
-router.get('/', list)
+router.get('/', async (req, res) => {
+  const searchKeyword = req.query.searchKeyword
+    ? {
+        name: {
+          $regex: req.query.searchKeyword,
+          $options: 'i',
+        },
+      }
+    : {};
+  const recipes = await Recipe.find({ ...searchKeyword });
+  res.send(recipes);
+});
+
 router.get("/search", listSearch);
-router.get('/related/:recipeId',listRelated)
-router.get('/categories',listCategories)
+router.get('/related/:recipeId',listRelated);
+router.get('/categories',listCategories);
 router.post("/by/search", listBySearch);
 router.get("/photo/:recipeId", photo);
 router.get("/photo1/:recipeId", photo1);
