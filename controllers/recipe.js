@@ -82,7 +82,7 @@ exports.create = (req, res) => {
             ingredients9,
             ingredients10,
           } = fields
-     if(!name || !description || !category || !instruction || !ingredients){
+     if(!name){
        return res.status(400).json({
          error:'All fields are required'
        });
@@ -117,6 +117,7 @@ exports.create = (req, res) => {
 
      recipe.save((err, result)=>{
        if(err){
+         console.log('ERROR', err)
          return res.status(400).json({
            error: errorHandler(err)
          })
