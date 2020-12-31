@@ -194,7 +194,7 @@ exports.update = (req, res) => {
 
 /*
 *SELL / ARRIVAL
-* by sell = /recipe?sortBy=sold&order=desc&limit=4
+* by sell = /recipe?sortBy=rating&order=desc&limit=4
 * by arrival = /recipe?sortBy=createdAt&order=desc&limit=4
 *if no params are sent, then all recipes are returned
 */

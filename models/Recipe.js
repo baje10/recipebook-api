@@ -122,6 +122,15 @@ const RecipeSchema = new mongoose.Schema(
             required: true
         },
         reviews: [ CommentSchema ],
+        rating: { type: Number,
+          default: 0,
+          required: true
+        },
+        numReviews: {
+          type: Number, 
+          default: 0, 
+          required: true 
+        },
         photo: {
             data: Buffer,
             contentType: String
