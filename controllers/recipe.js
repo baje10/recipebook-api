@@ -17,7 +17,8 @@ exports.recipeById = (req,res,next,id)=>{
 };
 
 exports.read = (req, res) =>{
-  req.recipe.photo = undefined
+  req.recipe.photo = undefined;
+  req.recipe.photo1 = undefined;
   return res.json(req.recipe);
 };
 
@@ -193,18 +194,28 @@ exports.update = (req, res) => {
 
 /*
 *SELL / ARRIVAL
-* by sell = /recipes?sortBy=sold&order=desc&limit=4
-* by arrival = /recipes?sortBy=createdAt&order=desc&limit=4
+* by sell = /recipe?sortBy=sold&order=desc&limit=4
+* by arrival = /recipe?sortBy=createdAt&order=desc&limit=4
 *if no params are sent, then all recipes are returned
 */
 
 exports.list = (req, res) => {
+
+  const searchKeyword = req.query.searchKeyword
+    ? {
+        name: {
+          $regex: req.query.searchKeyword,
+          $options: 'i',
+        },
+      }
+    : {};
+
     let order = req.query.order ? req.query.order : 'asc';
     let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
-    let limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    let limit = req.query.limit ? parseInt(req.query.limit) : 0;
 
-    Recipe.find()
-        .select('-photo')
+    Recipe.find({ ...searchKeyword })
+        .select(['-photo', '-photo1'])
         .populate('category')
         .sort([[sortBy, order]])
         .limit(limit)
@@ -298,28 +309,6 @@ exports.listBySearch = (req, res) => {
         });
 };
 
-exports.listSearch = (req, res) => {
-    // create query object to hold search value and category value
-    const query = {};
-    // assign search value to query.name
-    if (req.query.search) {
-        query.name = { $regex: req.query.search, $options: 'i' };
-        // assigne category value to query.category
-        if (req.query.category && req.query.category != 'All') {
-            query.category = req.query.category;
-        }
-        // find the recipe based on query object with 2 properties
-        // search and category
-        Recipe.find(query, (err, recipes) => {
-            if (err) {
-                return res.status(400).json({
-                    error: errorHandler(err)
-                });
-            }
-            res.json(recipes);
-        }).select('-photo');
-    }
-};
 
 exports.photo = (req, res, next) => {
   if(req.recipe.photo.data){

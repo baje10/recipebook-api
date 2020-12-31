@@ -12,8 +12,7 @@ const {create,
         listBySearch,
         photo,
         photo1,
-        reviews,
-        listSearch
+        reviews
       } = require('../controllers/recipe');
 const { requireSignin, isAuth, isAdmin } = require('../requirements/requirements');
 const { userById } = require('../controllers/user');
@@ -40,20 +39,8 @@ router.put(
 
 router.post('/reviews/:id', reviews, requireSignin)
 
-router.get('/', async (req, res) => {
-  const searchKeyword = req.query.searchKeyword
-    ? {
-        name: {
-          $regex: req.query.searchKeyword,
-          $options: 'i',
-        },
-      }
-    : {};
-  const recipes = await Recipe.find({ ...searchKeyword });
-  res.send(recipes);
-});
+router.get('/', list)
 
-router.get("/search", listSearch);
 router.get('/related/:recipeId',listRelated);
 router.get('/categories',listCategories);
 router.post("/by/search", listBySearch);
