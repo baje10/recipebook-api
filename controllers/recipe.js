@@ -35,6 +35,7 @@ exports.reviews = async (req, res, id) => {
     recipe.numReviews = recipe.reviews.length;
     recipe.rating = recipe.reviews.reduce((a, c) => c.rating + a, 0) /
     recipe.reviews.length;
+    recipe.finalRating = recipe.rating + recipe.reviews.length;
     const updatedRecipe = await recipe.save();
     res.status(200).send({
       data: updatedRecipe.reviews[updatedRecipe.reviews.length - 1],
@@ -200,6 +201,28 @@ exports.update = (req, res) => {
 */
 
 exports.list = (req, res) => {
+
+    let order = req.query.order ? req.query.order : 'asc';
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    let limit = req.query.limit ? parseInt(req.query.limit) : 0;
+
+    Recipe.find()
+        .select(['-photo', '-photo1'])
+        .populate('category')
+        .sort([[sortBy, order]])
+        .limit(limit)
+        .exec((err, recipes) => {
+            if (err) {
+                return res.status(400).json({
+                    error: 'Recipes not found'
+                });
+            }
+            res.json(recipes);
+            console.log('recipes', recipes);
+        });
+};
+
+exports.search = (req, res) => {
 
   const searchKeyword = req.query.searchKeyword
     ? {
