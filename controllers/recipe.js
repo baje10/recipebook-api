@@ -61,6 +61,7 @@ exports.create = (req, res) => {
             name,
             description,
             category,
+            recipeBy,
             instruction,
             instruction1,
             instruction2,
