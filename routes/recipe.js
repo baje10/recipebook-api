@@ -12,7 +12,8 @@ const {create,
         listBySearch,
         photo,
         photo1,
-        reviews
+        reviews,
+        nopaginatelist
       } = require('../controllers/recipe');
 const { requireSignin, isAuth, isAdmin } = require('../requirements/requirements');
 const { userById } = require('../controllers/user');
@@ -40,6 +41,8 @@ router.put(
 router.post('/reviews/:id', reviews, requireSignin)
 
 router.get('/', list);
+
+router.get('/sort', nopaginatelist);
 
 router.get('/related/:recipeId',listRelated);
 router.get('/categories',listCategories);

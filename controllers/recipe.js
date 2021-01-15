@@ -202,20 +202,33 @@ exports.update = (req, res) => {
 */
 
 exports.list = (req, res) => {
+  const { pageIndex, pageSize } = req.query;
+  const searchRegex = new RegExp(req.query.name);
+  const regexSearchOptions = [{ $match: { $text: { $search: req.query.name } } }];
+  const aggre = req.query.name ? regexSearchOptions : [];
+  var aggregateQuery = Recipe.aggregate(aggre);
+  const page = pageIndex;
+  const limit = pageSize;
+
+  Recipe
+  .aggregatePaginate(aggregateQuery, { page, limit }, (
+    err,
+    result
+  ) => {
+    if (err) {
+      console.err(err);
+    } else {
+      res.json(result);
+    }
+  });
+};
+
+exports.nopaginatelist = (req, res) => {
   let order = req.query.order ? req.query.order : 'asc';
   let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
   let limit = req.query.limit ? parseInt(req.query.limit) : 0;
 
-  const searchKeyword = req.query.searchKeyword
-  ? {
-      name: {
-        $regex: req.query.searchKeyword,
-        $options: 'i',
-      },
-    }
-  : {};
-
-  Recipe.find({...searchKeyword})
+  Recipe.find()
       .select(['-photo', '-photo1'])
       .populate('category')
       .sort([[sortBy, order]])

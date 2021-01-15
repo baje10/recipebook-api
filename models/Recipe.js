@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
+
+
 const CommentSchema = new mongoose.Schema (
   {
     name: { type: String, required: true },
@@ -26,7 +29,7 @@ const RecipeSchema = new mongoose.Schema(
             required: true,
             maxlength: 2000
         },
-        recipeBy: {
+        recipeBy: { 
             type: String,
             required: true,
             maxlength: 100
@@ -151,5 +154,7 @@ const RecipeSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+RecipeSchema.plugin(aggregatePaginate);
 
 module.exports = mongoose.model("Recipe", RecipeSchema);
