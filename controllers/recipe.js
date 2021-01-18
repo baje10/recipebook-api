@@ -194,35 +194,34 @@ exports.update = (req, res) => {
    });
 };
 
-/*
-*SELL / ARRIVAL
-* by sell = /recipe?sortBy=rating&order=desc&limit=4
-* by arrival = /recipe?sortBy=createdAt&order=desc&limit=4
-*if no params are sent, then all recipes are returned
-*/
 
 exports.list = (req, res) => {
+  //for pagination
   const { pageIndex, pageSize } = req.query;
+  const page = pageIndex;
+  const limit = pageSize;
+  //for searchKeyword
+  // run in mongodb terminal db.createIndex({ name: "text" })
   const searchRegex = new RegExp(req.query.name);
   const regexSearchOptions = [{ $match: { $text: { $search: req.query.name } } }];
   const aggre = req.query.name ? regexSearchOptions : [];
   var aggregateQuery = Recipe.aggregate(aggre);
-  const page = pageIndex;
-  const limit = pageSize;
-
+  // execute recipeList
   Recipe
-  .aggregatePaginate(aggregateQuery, { page, limit }, (
+  .aggregatePaginate(aggregateQuery,  { page, limit },
+  (
     err,
     result
   ) => {
     if (err) {
       console.err(err);
     } else {
-      res.json(result);
+      res.json(result)
     }
   });
 };
 
+//for New recipes and Most popular recipes
 exports.nopaginatelist = (req, res) => {
   let order = req.query.order ? req.query.order : 'asc';
   let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
@@ -243,15 +242,6 @@ exports.nopaginatelist = (req, res) => {
           console.log('recipes', recipes);
       });
 };
-
-
-/*
-
-It will find the recipe based on category
-
-recipes that has same categories will return
-
-*/
 
 exports.listRelated = (req, res) => {
  let limit = req.query.limit ? parseInt(req.query.limit) : 6;
@@ -324,7 +314,7 @@ exports.listBySearch = (req, res) => {
         });
 };
 
-
+// for recipe thumbnail photos
 exports.photo = (req, res, next) => {
   if(req.recipe.photo.data){
     res.set('Content-Type', req.recipe.photo.contentType)
@@ -332,7 +322,7 @@ exports.photo = (req, res, next) => {
   }
   next();
 };
-
+// for recipe details photos
 exports.photo1 = (req, res, next) => {
   if(req.recipe.photo1.data){
     res.set('Content-Type', req.recipe.photo1.contentType)
