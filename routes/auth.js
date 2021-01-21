@@ -16,10 +16,12 @@ router.post('/signup',userSignupValidator, function (req, res) {
           error:errorHandler(err)
         })
       }
+      const { _id, name, email, role } = user
+      const token = jwt.sign({ _id: user._id }, config.secret);
       user.salt = undefined;
       user.hashed_password = undefined;
       res.json({
-        user
+         token, _id, email, name, role  
       });
     });
 });
