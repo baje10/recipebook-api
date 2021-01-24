@@ -221,6 +221,38 @@ exports.list = (req, res) => {
   });
 };
 
+exports.listSearch = (req, res) => {
+    //for pagination
+    const { pageIndex, pageSize } = req.query;
+    const page = pageIndex;
+    const limit = pageSize;
+    //for searchKeyword
+    // run in mongodb terminal db.createIndex({ name: "text" })
+    const searchRegex = new RegExp(req.query.name);
+    const regexSearchOptions = [{ $match: { $text: { $search: req.query.name } } }];
+    const aggre = req.query.name ? regexSearchOptions : [];
+    var aggregateQuery = Recipe.aggregate(aggre);
+    // create query object to hold search value and category value
+    const query = {};
+    // assign search value to query.name
+    if (req.query.name) {
+        // find the product based on query object with 2 properties
+        // search and category
+        Recipe
+        .aggregatePaginate(aggregateQuery,  { page, limit },
+        (
+          err,
+          result
+        ) => {
+          if (err) {
+            console.err(err);
+          } else {
+            res.json(result)
+          }
+        });
+    }
+};
+
 //for New recipes and Most popular recipes
 exports.nopaginatelist = (req, res) => {
   let order = req.query.order ? req.query.order : 'asc';
