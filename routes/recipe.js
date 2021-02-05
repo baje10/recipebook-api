@@ -26,7 +26,6 @@ router.get('/get/:recipeId', read)
 router.delete(
     "/delete/:recipeId/:userId",
     requireSignin,
-    isAuth,
     isAdmin,
     remove
 );
